@@ -4,10 +4,10 @@ import streamlit as st
 from common.finly_mongo import FinlyMongo
 import pandas as pd
 
-finly = FinlyMongo()
+finly = FinlyMongo(is_atlas=True)
 
 with st.sidebar:
-    company = st.selectbox("Select company", finly.db['financialData'].distinct('metadata.symbol'))
+    company = st.selectbox("Select company", finly.db['financial_data'].distinct('metadata.symbol'))
 
 st.header(f"Watchlist - {company}")
 
@@ -27,19 +27,19 @@ st.subheader("Metrics")
 col1, col2, col3 = st.columns(3)
 
 eps_lst = []
-for eps in finly.db['financialData'].find({"metadata.symbol": company, 'metadata.type': 'quarterlyBasicEPS'}, sort=[('date', -1)]):
+for eps in finly.db['financial_data'].find({"metadata.symbol": company, 'metadata.type': 'quarterlyBasicEPS'}, sort=[('date', -1)]):
     eps_lst.append(eps['data']['raw'])
 
 net_income = []
-for record in finly.db['financialData'].find({"metadata.symbol": company, 'metadata.type': 'quarterlyNetIncome'}, sort=[('date', -1)]):
+for record in finly.db['financial_data'].find({"metadata.symbol": company, 'metadata.type': 'quarterlyNetIncome'}, sort=[('date', -1)]):
     net_income.append(record['data']['raw'])
 
 total_revenue = []
-for record in finly.db['financialData'].find({"metadata.symbol": company, 'metadata.type': 'quarterlyTotalRevenue'}, sort=[('date', -1)]):
+for record in finly.db['financial_data'].find({"metadata.symbol": company, 'metadata.type': 'quarterlyTotalRevenue'}, sort=[('date', -1)]):
     total_revenue.append(record['data']['raw'])
 
 total_expense = []
-for record in finly.db['financialData'].find({"metadata.symbol": company, 'metadata.type': 'quarterlyTotalExpenses'}, sort=[('date', -1)]):
+for record in finly.db['financial_data'].find({"metadata.symbol": company, 'metadata.type': 'quarterlyTotalExpenses'}, sort=[('date', -1)]):
     total_expense.append(record['data']['raw'])
 
 
@@ -56,7 +56,7 @@ with col3:
 st.subheader("Significant Numbers")
 dates = []
 data = []
-for obj in finly.db['financialData'].find({'metadata.symbol': company, 'metadata.type': 'quarterlyOperatingExpense'}):
+for obj in finly.db['financial_data'].find({'metadata.symbol': company, 'metadata.type': 'quarterlyOperatingExpense'}):
     dates.append(obj['date'])
     data.append(obj['data']['raw'])
 df = pd.DataFrame(data={'Date': dates, 'Operating Expense': data})

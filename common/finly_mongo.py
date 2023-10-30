@@ -5,17 +5,24 @@ from datetime import datetime
 
 
 class FinlyMongo:
-    def __init__(self, server="localhost", port=27017):
-        self.client = MongoClient(server, port)
+    def __init__(self,
+                 server="localhost",
+                 port=27017,
+                 atlas="mongodb+srv://finly-admin:TKVjbKtMQX2TCp47@finly.jh0wz9c.mongodb.net/",
+                 is_atlas=False):
+        if is_atlas:
+            self.client = MongoClient(atlas)
+        else:
+            self.client = MongoClient(server, port)
         self.db = self.client.finly
 
     def create_ts_collection(self, collection_name, date_field="date", meta_field="metadata"):
         self.db.create_collection(collection_name, timeseries={'timeField': date_field, 'metaField': meta_field})
 
-    def insert_ts_one(self, ts_data: TimeseriesMongo, collection_name="financialData"):
+    def insert_ts_one(self, ts_data: TimeseriesMongo, collection_name="financial_data"):
         self.db[collection_name].insert_one(ts_data.val())
 
-    def insert_ts_many(self, ts_data_lst, collection_name="financialData"):
+    def insert_ts_many(self, ts_data_lst, collection_name="financial_data"):
         self.db[collection_name].insert_many([ts_data.val() for ts_data in ts_data_lst])
 
     def insert_ts_many_from_json(self, filename):
