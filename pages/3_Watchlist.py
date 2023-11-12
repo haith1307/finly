@@ -6,8 +6,12 @@ import pandas as pd
 
 finly = FinlyMongo(is_atlas=True)
 
+def get_companies(connection):
+    return sorted(connection.db['financial_data'].distinct('metadata.symbol'))
+
+companies = get_companies(finly)
 with st.sidebar:
-    company = st.selectbox("Select company", finly.db['financial_data'].distinct('metadata.symbol'))
+    company = st.selectbox("Select company", companies)
 
 st.header(f"Watchlist - {company}")
 

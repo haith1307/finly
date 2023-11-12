@@ -1,1 +1,3 @@
 output
+.streamlit
+.streamlit/secrets.toml

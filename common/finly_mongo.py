@@ -26,7 +26,6 @@ class FinlyMongo:
         self.db[collection_name].insert_many([ts_data.val() for ts_data in ts_data_lst])
 
     def insert_ts_many_from_json(self, filename):
-
         # Read from step 1 output json
         with open(filename, 'r') as openfile:
             json_object = json.load(openfile)
