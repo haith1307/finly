@@ -1,3 +1,4 @@
 output
 .streamlit
 .streamlit/secrets.toml
+.images/
