@@ -6,6 +6,14 @@ import pandas as pd
 
 finly = FinlyMongo(is_atlas=True)
 
+st.set_page_config(
+    page_title="Watchlist",
+    page_icon="📕",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+st.title("📕 WATCHLIST")
+
 def get_companies(connection):
     return sorted(connection.db['financial_data'].distinct('metadata.symbol'))
 
@@ -13,20 +21,43 @@ companies = get_companies(finly)
 with st.sidebar:
     company = st.selectbox("Select company", companies)
 
-st.header(f"Watchlist - {company}")
+st.header(f"{company}")
+basic_info_1, basic_info_2, basic_info_3 = st.columns(3)
+with basic_info_1:
+    st.text("Foundation year: 1976")
+with basic_info_2:
+    st.text("Industry: Technology")
+with basic_info_3:
+    st.text("Head quarter: Cupertino, California, USA")
+st.divider()
 
 option = st.selectbox('Select Financial year', ['2019', '2020', '2021', '2022'])
 st.subheader("Financial Report Summary")
 if option == "2019":
-    st.markdown("In 2019, Tesla Inc., an electric vehicle and clean energy company, reported a total revenue of \$24.6 billion, representing a significant increase of 14% compared to the previous year. The company's automotive segment accounted for the majority of the revenue, generating \$24.4 billion, while its energy generation and storage segment contributed \$369 million. Despite the revenue growth, Tesla experienced a net loss of \$862 million in 2019, primarily due to high operating expenses and significant investments in research and development. The company's gross margin also faced pressure, declining from 20.9% in 2018 to 19.4% in 2019, primarily driven by pricing pressure and manufacturing inefficiencies. Despite the financial challenges, Tesla continued to focus on expanding its production capacity and investing in new models, setting the stage for future growth in the electric vehicle market.")
+    st.markdown("""
+    - Tesla Inc. reported a total revenue of $24.6 billion in 2019, a 14% increase from the previous year.
+    - The automotive segment generated the majority of the revenue at $24.4 billion.
+    - The energy generation and storage segment contributed $369 million.
+    - Tesla experienced a net loss of $862 million in 2019 due to high operating expenses and significant investments in research and development.
+    - The company's gross margin declined from 20.9% in 2018 to 19.4% in 2019, primarily driven by pricing pressure and manufacturing inefficiencies. However, Tesla remained focused on expanding production capacity and investing in new models for future growth in the electric vehicle market.
+    """)
 elif option == "2020":
-    st.write("In 2020, Tesla Inc., a leading electric vehicle and renewable energy company, achieved a remarkable year of financial performance. The company reported total revenue of \$31.5 billion, representing an impressive growth of 45% compared to the previous year. Tesla's automotive segment contributed \$27.2 billion to the revenue, while its energy generation and storage segment generated \$1.97 billion. The company's net income also surged to \$721 million in 2020, marking its first full year of profitability. Tesla's gross margin improved to 21.3%, driven by higher vehicle deliveries, cost reductions, and increased regulatory credit sales. The successful financial results reflect Tesla's strong market position and growing demand for electric vehicles globally.")
+    st.markdown("""
+    - In 2020, Tesla Inc. achieved remarkable financial performance.
+    - Total revenue reached $31.5 billion, a 45% growth from the previous year.
+    - The automotive segment contributed $27.2 billion to the revenue.
+    - The energy generation and storage segment generated $1.97 billion.
+    - Tesla reported a net income of $721 million, marking its first full year of profitability.
+    - The gross margin improved to 21.3% due to higher vehicle deliveries, cost reductions, and increased regulatory credit sales.
+    - These financial results highlight Tesla's strong market position and the growing global demand for electric vehicles.
+    """)
 elif option == "2021":
     st.write("I apologize for the inconvenience, but as an AI language model, my responses are based on pre-existing information up until September 2021. Therefore, I don't have access to specific financial data for Tesla in 2021. I recommend referring to Tesla's official investor relations webpage or their published financial reports for the most accurate and up-to-date information regarding their financial performance in 2021.")
 elif option == "2022":
     st.write("Told you I only data since September 2021. 2022 is then obviously a no, why dont you understand??!?")
-
+st.divider()
 st.subheader("Metrics")
+st.caption("compared to previous year")
 
 col1, col2, col3 = st.columns(3)
 
@@ -56,7 +87,7 @@ with col3:
 
 # with col1:
 #     st.metric(label=" Basic EPS", value=eps_lst[0], delta=f"{(eps_lst[0] - eps_lst[2]) / eps_lst[2] * 100 :.2f} %")
-
+st.divider()
 st.subheader("Significant Numbers")
 dates = []
 data = []
