@@ -7,7 +7,6 @@ st.set_page_config(
 )
 st.title("Finly")
 st.subheader("Making investing an ease by turning sophisticated financial data into familiar, actionable insights")
-# st.image("./images/front-page.webp")
 st.divider()
 st.header("About")
 st.markdown("""
