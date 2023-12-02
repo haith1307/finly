@@ -1,6 +1,4 @@
 import streamlit as st
-import time
-import streamlit as st
 from common.finly_mongo import FinlyMongo
 import pandas as pd
 
@@ -14,21 +12,26 @@ st.set_page_config(
 )
 st.title("📕 WATCHLIST")
 
+company_df = pd.read_csv("data/company.csv")
+
 def get_companies(connection):
     return sorted(connection.db['financial_data'].distinct('metadata.symbol'))
 
-companies = get_companies(finly)
+# companies = get_companies(finly)
 with st.sidebar:
-    company = st.selectbox("Select company", companies)
+    industry = st.selectbox("Select industry", company_df['industry'].unique())
+    company = st.selectbox("Select company", company_df[company_df['industry'] == industry]['company'].unique())
 
 st.header(f"{company}")
 basic_info_1, basic_info_2, basic_info_3 = st.columns(3)
+foundation_year = company_df[company_df['company'] == company]['foundation year'].to_list()[0]
+headquarter = company_df[company_df['company'] == company]['head quarter'].to_list()[0]
 with basic_info_1:
-    st.text("Foundation year: 1976")
+    st.text(f"Foundation year: {foundation_year}")
 with basic_info_2:
-    st.text("Industry: Technology")
+    st.text(f"Industry: {industry}")
 with basic_info_3:
-    st.text("Head quarter: Cupertino, California, USA")
+    st.text(f"Head quarter: {headquarter}")
 st.divider()
 
 option = st.selectbox('Select Financial year', ['2019', '2020', '2021', '2022'])
@@ -62,19 +65,19 @@ st.caption("compared to previous year")
 col1, col2, col3 = st.columns(3)
 
 eps_lst = []
-for eps in finly.db['financial_data'].find({"metadata.symbol": company, 'metadata.type': 'quarterlyBasicEPS'}, sort=[('date', -1)]):
+for eps in finly.db['financial_data'].find({"metadata.symbol": "AAPL", 'metadata.type': 'quarterlyBasicEPS'}, sort=[('date', -1)]):
     eps_lst.append(eps['data']['raw'])
 
 net_income = []
-for record in finly.db['financial_data'].find({"metadata.symbol": company, 'metadata.type': 'quarterlyNetIncome'}, sort=[('date', -1)]):
+for record in finly.db['financial_data'].find({"metadata.symbol": "AAPL", 'metadata.type': 'quarterlyNetIncome'}, sort=[('date', -1)]):
     net_income.append(record['data']['raw'])
 
 total_revenue = []
-for record in finly.db['financial_data'].find({"metadata.symbol": company, 'metadata.type': 'quarterlyTotalRevenue'}, sort=[('date', -1)]):
+for record in finly.db['financial_data'].find({"metadata.symbol": "AAPL", 'metadata.type': 'quarterlyTotalRevenue'}, sort=[('date', -1)]):
     total_revenue.append(record['data']['raw'])
 
 total_expense = []
-for record in finly.db['financial_data'].find({"metadata.symbol": company, 'metadata.type': 'quarterlyTotalExpenses'}, sort=[('date', -1)]):
+for record in finly.db['financial_data'].find({"metadata.symbol": "AAPL", 'metadata.type': 'quarterlyTotalExpenses'}, sort=[('date', -1)]):
     total_expense.append(record['data']['raw'])
 
 
@@ -85,32 +88,15 @@ with col2:
 with col3:
     st.metric(label="Total Expenses", value=f"$ {total_expense[0]/10**9:.2f} B", delta=f"{(total_expense[0] - total_expense[2])/total_expense[2] * 100 :.2f} %")
 
-# with col1:
-#     st.metric(label=" Basic EPS", value=eps_lst[0], delta=f"{(eps_lst[0] - eps_lst[2]) / eps_lst[2] * 100 :.2f} %")
-st.divider()
-st.subheader("Significant Numbers")
-dates = []
-data = []
-for obj in finly.db['financial_data'].find({'metadata.symbol': company, 'metadata.type': 'quarterlyOperatingExpense'}):
-    dates.append(obj['date'])
-    data.append(obj['data']['raw'])
-df = pd.DataFrame(data={'Date': dates, 'Operating Expense': data})
-st.line_chart(df, x="Date", y="Operating Expense")
+# st.divider()
+# st.subheader("Significant Numbers")
+# dates = []
+# data = []
+# for obj in finly.db['financial_data'].find({'metadata.symbol': company, 'metadata.type': 'quarterlyOperatingExpense'}):
+#     dates.append(obj['date'])
+#     data.append(obj['data']['raw'])
+# df = pd.DataFrame(data={'Date': dates, 'Operating Expense': data})
+# st.line_chart(df, x="Date", y="Operating Expense")
 
 
-
-# if option == "2019":
-#     with col1:
-#         st.metric(label="Total income", value="$862 M")
-#     with col2:
-#         st.metric(label="Total revenue", value="$ 24.6 B")
-#     with col3:
-#         st.metric(label="Something here", value="$ 100 M")
-# elif option == "2020":
-#     with col1:
-#         st.metric(label="Total income", value="$ 721 M", delta="-16.65 %")
-#     with col2:
-#         st.metric(label="Total revenue", value="$ 31.5 B", delta="28.05 %")
-#     with col3:
-#         st.metric(label="Something here", value="$ 225 M", delta="225.00 %")
 
