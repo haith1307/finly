@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 
 st.set_page_config(
     page_title="Investing Tips",
@@ -6,70 +7,66 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
+# st-emotion-cache-5rimss
 st.title("💡 INVESTING TIPS")
-st.divider()
+st.markdown(
+    """
+    <style>
+    .st-emotion-cache-5rimss {
+        font-family: "Consolas";
+        margin-top: 0rem;
+        margin-bottom: 0.25rem;
+        color: rgb(49,51,63);
+        background-color: rgb(248, 249, 251);
+        border-radius:0.5rem;
+        padding-top: 0.5rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-bottom: 0.5rem;
+    }
+    
+    .st-emotion-cache-nahz7x {
+        font-family: "Source Code Pro";
+        margin-top: 0rem;
+        margin-bottom: 0.25rem;
+        background-color: rgb(26,28,36);
+        border-radius:0.5rem;
+        padding-top: 0.5rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-bottom: 0.5rem;
+    }
+     .st-emotion-cache-nahz7x e1nzilvr5 {
+        font-family: "Source Code Pro";
+        margin-top: 0rem;
+        margin-bottom: 0.25rem;
+        background-color: rgb(0,0,0);
+        border-radius:0.5rem;
+        padding-top: 0.5rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-bottom: 0.5rem;
+    }
+    </style>
+    """, unsafe_allow_html=True
+)
+investing_df = pd.read_csv("data/investing_tips.csv")
+industry_focused_tips = investing_df[investing_df['category'] == "Industry-focused"]['tip'].to_list()
+investing_rules = investing_df[investing_df['category'] == "Investing Rules"]['tip'].to_list()
+fun_stuff = investing_df[investing_df['category'] == "Fun stuff"]['tip'].to_list()
+
 col_1, col_2, col_3 = st.columns(3)
 with col_1:
     st.text("Industry-focused")
-    st.code("""
-    Aircraft sector has low liquidity
-    """)
-    st.code("""
-    Cash flow rate is high (~20%) among
-    energy sectors due to
-    """)
-    st.code("""
-    Tech companies usually come with
-    huge investment
-    """)
+    for tip in industry_focused_tips:
+        st.markdown(tip)
 
 with col_2:
     st.text("Investing Rules")
-    st.code("""
-        Diversify your portfolio
-        """)
-    st.code("""
-        Do thorough research and avoid timing
-        the market
-        """)
-    st.code("""
-    Set long-term goals because investing
-    is a long-term endeavor
-    """)
-    st.code("""
-    Invest based on risk tolerance:
-    understand your comfort level
-    with risk and align investments
-    accordingly
-    """)
-    st.code("""
-    Consider costs and fees because high
-    fees can eat into your returns over
-    time.
-    """)
+    for tip in investing_rules:
+        st.markdown(tip)
 
 with col_3:
     st.text("Fun stuff")
-    st.code("""
-    print("Random coding stuff")
-    print("cause coding is fun, rite?")
-    """)
-    st.code("""
-    answer = input("How you doin?")
-    if answer == ":smile:":
-        print(":wink:")
-    else:
-        print("run away")
-    """)
-    st.code("""
-    print("Hello, World!")
-    """)
-    st.code("""
-    # Do you remember single-line comments?
-    '''
-    How about ...
-                    multi-line ...
-                                comments?
-    '''
-    """)
+    for tip in fun_stuff:
+        st.markdown(tip)
